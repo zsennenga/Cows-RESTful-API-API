@@ -1,6 +1,8 @@
 <?php
-define('PUBLIC_KEY', '');
-define('PRIVATE_KEY','');
+define('PUBLIC_KEY', 'test');
+define('PRIVATE_KEY','test');
 # DO NOT EDIT BELOW THIS LINE
-define('API_PATH', '')
+define('API_PATH', 'localhost');
+define('EVENT_PATH',"/event/");
+define('SESSION_PATH', "/session/");
 ?>
