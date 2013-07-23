@@ -81,7 +81,7 @@ class CowsApi	{
 				"tgc" => $tgc,
 				"publicKey" => PUBLIC_KEY
 		);
-		$out = $this->postRequest(SESSION_PATH, $params);
+		$out = $this->postRequest(SESSION_PATH . $this->siteId . "/", $params);
 		$out = json_decode($out);
 		if (isset($out['sessionKey'])	{
 			$this->sessionKey = $out['sessionKey'];
@@ -95,12 +95,12 @@ class CowsApi	{
 	}
 	
 	public function createEvent($params)	{
-		$out = $this->postRequest(EVENT_PATH,$params);
+		$out = $this->postRequest(EVENT_PATH . $this->siteId . "/",$params);
 		return handleError($out);
 	}
 	
 	public function getEventInfo()	{
-		$out = $this->getRequest(EVENT_PATH,$params);
+		$out = $this->getRequest(EVENT_PATH . $this->siteId . "/",$params);
 		return handleError($out);
 	}
 	
@@ -116,12 +116,12 @@ class CowsApi	{
 	}
 	
 	public function getEventIdInfo($id)	{
-		$out = $this->getRequest(EVENT_PATH . $id);
+		$out = $this->getRequest(EVENT_PATH . $this->siteId . "/" . $id);
 		return handleError($out);
 	}
 	
 	public function deleteEventById($id)	{
-		$out = $this->deleteRequest(EVENT_PATH . $id);
+		$out = $this->deleteRequest(EVENT_PATH . $this->siteId . "/" . $id);
 		return handleError($out);
 	}
 	
