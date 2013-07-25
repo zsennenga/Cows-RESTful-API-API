@@ -6,7 +6,10 @@ class CowsApi	{
 	private $handle;
 	private $sessionKey;
 	private $siteId
-	private $err
+	
+	private $errorCodeTranslation
+	private $errorCode;
+	private $errorMessage;
 	
 	public function __construct($siteId)	{
 		$this->curlHandle = curl_init();
@@ -16,7 +19,7 @@ class CowsApi	{
 		curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYPEER, false);
 		
 		$this->siteId = $siteId;
-		$this->$err = handleError($this->getRequest("/error/"));
+		$this->errorCodeTranslation = json_decode($this->getRequest("/error/"));
 	}
 	
 	private function translateError($out)	{
@@ -31,11 +34,9 @@ class CowsApi	{
 		curl_setopt($this->curlHandle, CURLOPT_URL, $url . "?" . $params);
 		$out = curl_exec($this->handle);
 		if ($out == false)	{
-			$err = json_encode(array(
-					"code" => "-1",
-					"message" => curl_error($this->handle)
-			));
-			return $err;
+			$this->errorCode = $errorCodeTranslation["-1"];
+			$this->errorMessage = curl_error($this->handle);
+			return false;
 		}
 		else return $out;
 	}
@@ -49,11 +50,9 @@ class CowsApi	{
 		curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $params);
 		$out = curl_exec($this->curlHandle);
 		if ($out == false)	{
-			$err = json_encode(array(
-					"code" => "-1",
-					"message" => curl_error($this->handle)
-			));
-			return $err;
+			$this->errorCode = $errorCodeTranslation["-1"];
+			$this->errorMessage = curl_error($this->handle);
+			return false;
 		}
 		else return $out;
 	}
@@ -67,11 +66,9 @@ class CowsApi	{
 		curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, "DELETE");
 		$out = curl_exec($this->handle);
 		if ($out == false)	{
-			$err = json_encode(array(
-					"code" => "-1",
-					"message" => curl_error($this->handle)
-			));
-			return $err;
+			$this->errorCode = $errorCodeTranslation["-1"];
+			$this->errorMessage = curl_error($this->handle);
+			return false;
 		}
 		else return $out;
 	}
@@ -105,12 +102,12 @@ class CowsApi	{
 	}
 	
 	public function handleError($out)	{
+		if ($out == false) return false;
 		$out = json_decode($out);
 		if (isset($out['code']))	{
-			return array (
-					"code" => translateError($out['code']),
-					"message" => $out['message']
-			);
+			$this->errorCode = translateError($out);
+			$this->errorMessage = $out['message'];
+			return false;
 		}
 		return $out;
 	}
