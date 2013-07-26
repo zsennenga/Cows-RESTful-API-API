@@ -29,8 +29,8 @@ class CowsApi	{
 	private function getRequest($uri,$params = array())	{
 		$url = API_PATH . $uri;
 		if (is_array($params)) $params = http_build_query($params);
-		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY;
-		else $params = $params . "&publicKey=" . PUBLIC_KEY;
+		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
+		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
 		$params = $params . $this->getSignatureParameter("GET", $uri, $params);
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "GET");
 		curl_setopt($this->handle, CURLOPT_URL, $url . "?" . $params);
@@ -46,8 +46,8 @@ class CowsApi	{
 	private function postRequest($uri,$params = array())	{
 		$url = API_PATH . $uri;
 		if (is_array($params)) $params = http_build_query($params);
-		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY;
-		else $params = $params . "&publicKey=" . PUBLIC_KEY;
+		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
+		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
 		$params = $params . $this->getSignatureParameter("POST", $uri, $params);
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
@@ -64,8 +64,8 @@ class CowsApi	{
 	private function deleteRequest($uri,$params = "")	{
 		$url = API_PATH . $uri;
 		if (is_array($params)) $params = http_build_query($params);
-		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY;
-		else $params = $params . "&publicKey=" . PUBLIC_KEY;
+		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
+		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
 		$params = $params . $this->getSignatureParameter("DELETE", $uri, $params);
 		curl_setopt($this->handle, CURLOPT_URL, $url . "?" . $params);
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "DELETE");
