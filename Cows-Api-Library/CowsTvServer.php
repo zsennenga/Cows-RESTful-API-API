@@ -36,7 +36,9 @@ else	{
 		$json = array();
 		foreach ($resp as $event)	{
 			if (!isPast($event['date'],$event['endTime']))	{
-				array_push($json,$event);
+				
+				$val = "<div class = 'row'><div class = 'event'><div class = 'title'>" . $event['title'] . "</div><br><div class = 'other'> " . $event['startTime'] . " - " . $event['endTime'] . "<br>" . $event['location'] . "<br></div></div></div>";
+				array_push($json,$val);
 			}
 		}
 		
