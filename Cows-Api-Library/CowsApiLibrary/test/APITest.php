@@ -1,4 +1,9 @@
 <?php
+/**
+ * A script to test most of the API's functions
+ * 
+ * 
+ */
 require_once '../CowsApi.php';
 
 $params = array(
@@ -57,8 +62,8 @@ $out = $cows->createEvent($params);
 echo "Creating event after session destroyed:\n";
 var_dump($out);
 
-//$out = $cows->getEventInfo();
-//echo "Getting generic event info";
-//var_dump($out);
+$out = $cows->getEventInfo();
+echo "Getting generic event info";
+var_dump($out);
 
 ?>

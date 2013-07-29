@@ -2,15 +2,23 @@
 
 require_once 'Config.php';
 
+/**
+ * Class used to interact with COWS-RESTful-API
+ * @author its-zach
+ *
+ */
 class CowsApi	{
 	private $handle;
 	private $siteId;
-	private $publicKey;
 	
 	private $errorCodeTranslation;
 	private $errorCode;
 	private $errorMessage;
 	
+	/**
+	 * Builds class to interact with a specific COWS sub-site
+	 * @param String $siteId
+	 */
 	public function __construct($siteId)	{
 		$this->handle = curl_init();
 
@@ -21,20 +29,28 @@ class CowsApi	{
 		$this->siteId = $siteId;
 		$this->errorCodeTranslation = json_decode($this->getRequest("/error/"),true);
 	}
-	
+	/**
+	 * Get the Cows error code name from a given int string.
+	 * @param Error Code $out
+	 * @return Error Name
+	 */
 	private function translateError($out)	{
 		return $err[$out['code']];
 	}
 	
 	private function getRequest($uri,$params = array())	{
 		$url = API_PATH . $uri;
+		
 		if (is_array($params)) $params = http_build_query($params);
+		
 		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
-		$params = $params . $this->getSignatureParameter("GET", $uri, $params);
+	 	$params = $params . $this->getSignatureParameter("GET", $uri, $params);
+		
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "GET");
 		curl_setopt($this->handle, CURLOPT_URL, $url . "?" . $params);
 		$out = curl_exec($this->handle);
+		
 		if ($out == false)	{
 			$this->errorCode = $this->errorCodeTranslation["-1"];
 			$this->errorMessage = curl_error($this->handle);
@@ -42,17 +58,31 @@ class CowsApi	{
 		}
 		else return $out;
 	}
-	
+	/**
+	 * Executes a POST request using the given URI.
+	 *
+	 * Do NOT prepend the API_PATH/Hostname of the Api.
+	 *
+	 * Returns the response text or false if a cURL error occurs
+	 *
+	 * @param String $uri
+	 * @param String $params
+	 * @return boolean|mixed
+	 */
 	private function postRequest($uri,$params = array())	{
 		$url = API_PATH . $uri;
+		
 		if (is_array($params)) $params = http_build_query($params);
+		
 		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
 		$params = $params . $this->getSignatureParameter("POST", $uri, $params);
+		
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($this->handle, CURLOPT_URL, $url);
 		$out = curl_exec($this->handle);
+		
 		if ($out == false)	{
 			$this->errorCode = $this->errorCodeTranslation["-1"];
 			$this->errorMessage = curl_error($this->handle);
@@ -60,17 +90,30 @@ class CowsApi	{
 		}
 		else return $out;
 	}
-	
+	/**
+	 * Executes a DELETE request using the given URI.
+	 *
+	 * Do NOT prepend the API_PATH/Hostname of the Api.
+	 *
+	 * Returns the response text or false if a cURL error occurs
+	 *
+	 * @param String $uri
+	 * @param String $params
+	 * @return boolean|mixed
+	 */
 	private function deleteRequest($uri,$params = "")	{
 		$url = API_PATH . $uri;
+		
 		if (is_array($params)) $params = http_build_query($params);
+		
 		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
 		$params = $params . $this->getSignatureParameter("DELETE", $uri, $params);
+		
 		curl_setopt($this->handle, CURLOPT_URL, $url . "?" . $params);
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "DELETE");
 		$out = curl_exec($this->handle);
-		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, null);
+		
 		if ($out == false)	{
 			$this->errorCode = $this->errorCodeTranslation["-1"];
 			$this->errorMessage = curl_error($this->handle);
@@ -78,7 +121,15 @@ class CowsApi	{
 		}
 		else return $out;
 	}
-	
+	/**
+	 * 
+	 * Creates a session with the Cows api and thus, with COWS
+	 * 
+	 * Returns the json response as an associative array
+	 * 
+	 * @param Ticket Granting Cookie $tgc
+	 * @return mixed
+	 */
 	public function getSession($tgc)	{
 		$params = array(
 				"tgc" => $tgc
@@ -87,32 +138,77 @@ class CowsApi	{
 		$out = json_decode($out,true);
 		return $out;
 	}
-	
+	/**
+	 * Ends the COWS/Cows api session
+	 * 
+	 * Returns the json response as an associative array
+	 * @return mixed
+	 */
 	public function destroySession()	{
 		$out = $this->deleteRequest(SESSION_PATH);
 		return json_decode($out,true);
 	}
-	
+	/**
+	 * 
+	 * Creates an event on COWS
+	 * 
+	 * Returns the json response as an associative array
+	 * 
+	 * @param array $params
+	 * @return mixed
+	 */
 	public function createEvent($params)	{
 		$out = $this->postRequest(EVENT_PATH . $this->siteId . "/",$params);
 		return json_decode($out,true);
 	}
-	
+	/**
+	 * Gets all the event info, pared down by the parameters
+	 * 
+	 * Uses Cows RSS parameters
+	 * 
+	 * Returns the json response as an associative array
+	 * 
+	 * @param unknown $params
+	 * @return mixed
+	 */
 	public function getEventInfo($params = array())	{
 		$out = $this->getRequest(EVENT_PATH . $this->siteId . "/",$params);
 		return json_decode($out,true);
 	}
-	
+	/**
+	 * Gets the info for a single event by the event ID
+	 * 
+	 * Returns the json response as an associative array
+	 * 
+	 * @param EventId $id
+	 * @return mixed
+	 */
 	public function getEventIdInfo($id)	{
 		$out = $this->getRequest(EVENT_PATH . $this->siteId . "/" . $id);
 		return json_decode($out,true);
 	}
-	
+	/**
+	 * 
+	 * Deletes a single event by the event ID
+	 * 
+	 * Returns the json response as an associative array
+	 * 
+	 * @param Event Id $id
+	 * @return mixed
+	 */
 	public function deleteEventById($id)	{
 		$out = $this->deleteRequest(EVENT_PATH . $this->siteId . "/" . $id);
 		return json_decode($out,true);
 	}
-	
+	/**
+	 * 
+	 * Generates the signature for the request
+	 * 
+	 * @param string $requestMethod
+	 * @param string $requestURI
+	 * @param string $requestParameters
+	 * @return string
+	 */
 	private function getSignatureParameter($requestMethod, $requestURI, $requestParameters)	{
 		return "&signature=" . hash_hmac('sha256',$requestMethod.$requestURI.$requestParameters,PRIVATE_KEY);
 	}	
