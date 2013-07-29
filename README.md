@@ -3,8 +3,10 @@ Cows-RESTful-API-API
 
 A PHP library intended to interact with COWS-RESTful-API
 
-This project includes both the api, but two scripts that make use of it
+The library manages signature calculation and error translation using the GET /error URI.
 
-CowsTvDisplay.php
+This project includes two scripts using the API:
 
-CowsMobileServer.php  
+CowsTvServer.php
+
+CowsMobileServer.php
