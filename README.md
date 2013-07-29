@@ -9,4 +9,4 @@ This project includes two scripts using the API:
 
 CowsTvServer.php
 
-CowsMobileServer.php
+CowsMobileServer.php (Work in Progress)
