@@ -2,16 +2,13 @@
 
 require_once 'CowsApiLibrary/CowsApi.php';
 
-/*if (!isset($_GET['callback']) ||
+if (!isset($_GET['callback']) ||
 	!isset($_GET['siteId']))	{
 	exit(0);
 }
 
 $siteId = $_GET['siteId'];
-$callback = $_GET['callback'];*/
-
-$siteId = 'its';
-$callback = 'a';
+$callback = $_GET['callback'];
 
 $cows = new CowsApi($siteId);
 
