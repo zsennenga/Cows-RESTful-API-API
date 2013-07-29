@@ -146,7 +146,7 @@ class CowsApi	{
 	 */
 	public function destroySession()	{
 		$out = $this->deleteRequest(SESSION_PATH);
-		return json_decode($out,true);
+		return $out;
 	}
 	/**
 	 * 
@@ -159,7 +159,7 @@ class CowsApi	{
 	 */
 	public function createEvent($params)	{
 		$out = $this->postRequest(EVENT_PATH . $this->siteId . "/",$params);
-		return json_decode($out,true);
+		return $out;
 	}
 	/**
 	 * Gets all the event info, pared down by the parameters
@@ -173,7 +173,7 @@ class CowsApi	{
 	 */
 	public function getEventInfo($params = array())	{
 		$out = $this->getRequest(EVENT_PATH . $this->siteId . "/",$params);
-		return json_decode($out,true);
+		return $out;
 	}
 	/**
 	 * Gets the info for a single event by the event ID
@@ -185,7 +185,7 @@ class CowsApi	{
 	 */
 	public function getEventIdInfo($id)	{
 		$out = $this->getRequest(EVENT_PATH . $this->siteId . "/" . $id);
-		return json_decode($out,true);
+		return $out;
 	}
 	/**
 	 * 
@@ -198,7 +198,7 @@ class CowsApi	{
 	 */
 	public function deleteEventById($id)	{
 		$out = $this->deleteRequest(EVENT_PATH . $this->siteId . "/" . $id);
-		return json_decode($out,true);
+		return $out;
 	}
 	/**
 	 * 
