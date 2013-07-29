@@ -135,7 +135,6 @@ class CowsApi	{
 				"tgc" => $tgc
 		);
 		$out = $this->postRequest(SESSION_PATH . $this->siteId . "/", $params);
-		$out = json_decode($out,true);
 		return $out;
 	}
 	/**
@@ -176,7 +175,6 @@ class CowsApi	{
 		return $out;
 	}
 	/**
-	 * Gets the info for a single event by the event ID
 	 * 
 	 * Returns the json response as an associative array
 	 * 
