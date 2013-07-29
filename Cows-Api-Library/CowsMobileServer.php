@@ -21,7 +21,7 @@ if ($out)	{
 		echo "0:0";
 }
 else	
-	echo "-1:Unable to parse response";
+	echo "-1:Unable to parse JSON response from api";
 
 $cows->destroySession();
 ?>
