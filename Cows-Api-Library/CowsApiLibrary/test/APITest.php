@@ -20,7 +20,7 @@ $params = array(
 	'EventTypeName' => 'Maintenance_Other'
 );
 
-$tgc = 'TGT-30455-O6XbmSLiLXBnKD9vuhl9EcuhKf9qL7QseugDspGDDx6lmrJnPG-56';
+$tgc = '';
 
 $cows = new CowsApi('its');
 
