@@ -43,9 +43,10 @@ class CowsApi	{
 		
 		if (is_array($params)) $params = http_build_query($params);
 		
-		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
+		/*if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
-	 	$params = $params . $this->getSignatureParameter("GET", $uri, $params);
+	 	$params = $params . $this->getSignatureParameter("GET", $uri, $params);*/
+		$this->auth("GET", $uri, $params);
 		
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "GET");
 		curl_setopt($this->handle, CURLOPT_URL, $url . "?" . $params);
@@ -74,9 +75,10 @@ class CowsApi	{
 		
 		if (is_array($params)) $params = http_build_query($params);
 		
-		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
+		/*if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
-		$params = $params . $this->getSignatureParameter("POST", $uri, $params);
+		$params = $params . $this->getSignatureParameter("POST", $uri, $params);*/
+		$this->auth("POST", $uri, $params);
 		
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
@@ -106,9 +108,10 @@ class CowsApi	{
 		
 		if (is_array($params)) $params = http_build_query($params);
 		
-		if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
+		/*if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
-		$params = $params . $this->getSignatureParameter("DELETE", $uri, $params);
+		$params = $params . $this->getSignatureParameter("DELETE", $uri, $params);*/
+		$this->auth("DELETE", $uri, $params);
 		
 		curl_setopt($this->handle, CURLOPT_URL, $url . "?" . $params);
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -198,6 +201,15 @@ class CowsApi	{
 		$out = $this->deleteRequest(EVENT_PATH . $this->siteId . "/" . $id);
 		return $out;
 	}
+	
+	private function auth($method, $uri, $params)	{
+		$time = time();
+		$arr = array(
+			"Authorization: " . PUBLIC_KEY . "|" . $time  . "|" . $this->getSignatureParameter($method, $uri, $params,$time)
+		);
+		
+		curl_setopt($this->handle, CURLOPT_HEADER, $arr);
+	}
 	/**
 	 * 
 	 * Generates the signature for the request
@@ -207,8 +219,8 @@ class CowsApi	{
 	 * @param string $requestParameters
 	 * @return string
 	 */
-	private function getSignatureParameter($requestMethod, $requestURI, $requestParameters)	{
-		return "&signature=" . hash_hmac('sha256',$requestMethod.$requestURI.$requestParameters,PRIVATE_KEY);
+	private function getSignatureParameter($requestMethod, $requestURI, $requestParameters, $time)	{
+		return "&signature=" . hash_hmac('sha256',$requestMethod.$requestURI.$requestParameters.$time,PRIVATE_KEY);
 	}	
 	
 }
