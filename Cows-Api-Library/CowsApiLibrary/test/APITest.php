@@ -29,7 +29,7 @@ echo "Creating Session\n";
 $out = $cows->getSession($tgc);
 var_dump ($out);
 
-$out = $cows->createEvent($params);
+$out = json_decode($cows->createEvent($params),true);
 echo "Creating Event:\n";
 var_dump($out);
 if (isset($out['eventId']))	{

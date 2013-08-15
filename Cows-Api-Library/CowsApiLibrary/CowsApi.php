@@ -12,8 +12,8 @@ class CowsApi	{
 	private $siteId;
 	
 	private $errorCodeTranslation;
-	private $errorCode;
-	private $errorMessage;
+	public $errorCode;
+	public $errorMessage;
 	
 	/**
 	 * Builds class to interact with a specific COWS sub-site
@@ -53,7 +53,7 @@ class CowsApi	{
 		$out = curl_exec($this->handle);
 		
 		if ($out == false)	{
-			$this->errorCode = $this->errorCodeTranslation["-1"];
+			$this->errorCode = curl_errno($this->handle);
 			$this->errorMessage = curl_error($this->handle);
 			return false;
 		}
@@ -78,6 +78,7 @@ class CowsApi	{
 		/*if ($params == "") $params = $params . "publicKey=" . PUBLIC_KEY. "&time=" . time();
 		else $params = $params . "&publicKey=" . PUBLIC_KEY . "&time=" . time();
 		$params = $params . $this->getSignatureParameter("POST", $uri, $params);*/
+
 		$this->auth("POST", $uri, $params);
 		
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "POST");
@@ -85,8 +86,8 @@ class CowsApi	{
 		curl_setopt($this->handle, CURLOPT_URL, $url);
 		$out = curl_exec($this->handle);
 		
-		if ($out == false)	{
-			$this->errorCode = $this->errorCodeTranslation["-1"];
+		if ($out === false)	{
+			$this->errorCode = curl_errno($this->handle);
 			$this->errorMessage = curl_error($this->handle);
 			return false;
 		}
@@ -117,8 +118,8 @@ class CowsApi	{
 		curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "DELETE");
 		$out = curl_exec($this->handle);
 		
-		if ($out == false)	{
-			$this->errorCode = $this->errorCodeTranslation["-1"];
+		if ($out === false)	{
+			$this->errorCode = curl_errno($this->handle);
 			$this->errorMessage = curl_error($this->handle);
 			return false;
 		}
@@ -208,7 +209,7 @@ class CowsApi	{
 			"Authorization: " . PUBLIC_KEY . "|" . $time  . "|" . $this->getSignatureParameter($method, $uri, $params,$time)
 		);
 		
-		curl_setopt($this->handle, CURLOPT_HEADER, $arr);
+		curl_setopt($this->handle, CURLOPT_HTTPHEADER, $arr);
 	}
 	/**
 	 * 
@@ -220,7 +221,7 @@ class CowsApi	{
 	 * @return string
 	 */
 	private function getSignatureParameter($requestMethod, $requestURI, $requestParameters, $time)	{
-		return "&signature=" . hash_hmac('sha256',$requestMethod.$requestURI.$requestParameters.$time,PRIVATE_KEY);
-	}	
+		return hash_hmac('sha256',$requestMethod.$requestURI.$requestParameters.$time,PRIVATE_KEY);
+	}
 	
 }
