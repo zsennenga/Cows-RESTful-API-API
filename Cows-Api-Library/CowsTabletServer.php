@@ -2,13 +2,16 @@
 
 require_once 'CowsApiLibrary/CowsApi.php';
 
+$publicKey = "EDITME";
+$privateKey = "EDITME";
+
 if (!isset($_GET['siteId']) || !isset($_GET['date']) || !isset($_GET['bldgRoom']))      {
 	exit(0);
 }
 
 $siteId = $_GET['siteId'];
 
-$cows = new CowsApi($siteId);
+$cows = new CowsApi($siteId,$publicKey,$privateKey);
 
 $params = array(
 		'timeStart' => 'midnight ' . $_GET['date'],

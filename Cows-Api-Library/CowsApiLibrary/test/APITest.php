@@ -21,8 +21,10 @@ $params = array(
 );
 
 $tgc = '';
+$publicKey = 'test';
+$privateKey = 'test';
 
-$cows = new CowsApi('its');
+$cows = new CowsApi('its',$publicKey,$privateKey);
 
 echo "Creating Session\n";
 

@@ -2,6 +2,9 @@
 
 require_once 'CowsApiLibrary/CowsApi.php';
 
+$publicKey = "EDITME";
+$privateKey = "EDITME";
+
 $params = $_POST;
 
 if (!isset($params['siteId']) || !isset($params['tgc']))	{
@@ -17,7 +20,7 @@ $tgc = $params['tgc'];
 unset($params['siteId']);
 unset($params['tgc']);
 
-$cows = new CowsApi($siteId);
+$cows = new CowsApi($siteId,$publicKey,$privateKey);
 parseError($cows->getSession($tgc),$cows);
 parseError($cows->createEvent($params),$cows);
 
