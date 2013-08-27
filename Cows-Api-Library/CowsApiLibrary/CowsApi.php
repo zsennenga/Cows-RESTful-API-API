@@ -84,7 +84,7 @@ class CowsApi	{
 		curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
 		curl_setopt($this->handle, CURLOPT_URL, $url);
 		$out = curl_exec($this->handle);
-		
+		curl_setopt($this->handle, CURLOPT_POSTFIELDS, array());
 		if ($out === false)	{
 			$this->errorCode = curl_errno($this->handle);
 			$this->errorMessage = curl_error($this->handle);
