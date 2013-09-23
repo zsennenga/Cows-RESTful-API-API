@@ -33,15 +33,6 @@ class CowsApi	{
 		$this->privateKey = $privateKey;
 		
 		$this->siteId = $siteId;
-		$this->errorCodeTranslation = json_decode($this->getRequest("/error/"),true);
-	}
-	/**
-	 * Get the Cows error code name from a given int string.
-	 * @param Error Code $out
-	 * @return Error Name
-	 */
-	private function translateError($out)	{
-		return $err[$out['code']];
 	}
 	
 	private function getRequest($uri,$params = array())	{
@@ -60,7 +51,7 @@ class CowsApi	{
 			$this->errorMessage = curl_error($this->handle);
 			return false;
 		}
-		else return $out;
+		return $out;
 	}
 	/**
 	 * Executes a POST request using the given URI.
@@ -90,7 +81,7 @@ class CowsApi	{
 			$this->errorMessage = curl_error($this->handle);
 			return false;
 		}
-		else return $out;
+		return $out;
 	}
 	/**
 	 * Executes a DELETE request using the given URI.
@@ -119,7 +110,7 @@ class CowsApi	{
 			$this->errorMessage = curl_error($this->handle);
 			return false;
 		}
-		else return $out;
+		return $out;
 	}
 	/**
 	 * 
@@ -143,7 +134,7 @@ class CowsApi	{
 	 * @return mixed
 	 */
 	public function destroySession()	{
-		return $this->deleteRequest(SESSION_PATH);
+		return $this->deleteRequest(SESSION_PATH . $this->siteId);
 	}
 	/**
 	 * 

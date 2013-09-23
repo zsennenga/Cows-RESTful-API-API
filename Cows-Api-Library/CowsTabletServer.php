@@ -27,9 +27,10 @@ if ($resp === null || $resp === false)  {
 
 else    {
 	$resp = json_decode($resp,true);
+	$resp = $resp['message'];
 
 	if (!is_array($resp)) exit(0);
-
+	
 	if (count($resp) == 0)  {
 		$json = array(0 => "noEvent");
 	}

@@ -29,19 +29,15 @@ $cows->destroySession();
 echo "0:0";
 
 function parseError($arr,$cows)	{
-	$out = json_decode($arr,true);
-	if (is_array($out))	{
-		if (isset($out['code']))	{
+		$out = json_decode($arr,true);
+		if ($out === null || $out === false)	{
+			echo "-1: Unable to parse JSON from API";
+			exit(0);
+		}
+		if ($out['code'] < 0 )	{
 			echo $out['code'] . ":" . $out['message'];
 			$cows->destroySession();
 			exit(0);
 		}
-	}
-	else	{
-		echo "-1:Unable to parse JSON response from api";
-		$cows->destroySession();
-		exit(0);
-	}
-	
 }
 ?>
